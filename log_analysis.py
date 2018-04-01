@@ -11,4 +11,18 @@ def get_top_15():
   conn.close()
   return info
 
-get_top_15()
+def get_top_articles():
+    return "This should be the top three articles."
+
+def get_top_authors():
+    return "This should be the top article authors"
+
+def get_error_days():
+    return "This should be the days with more than 1% requests leading to error"
+
+for info in get_top_15():
+    print(info)
+
+print(get_top_articles())
+print(get_top_authors())
+print(get_error_days())
