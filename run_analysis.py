@@ -10,5 +10,5 @@ for a in get_top_authors():
 
 print('\n\n3. Days when more than 1% of requests led to errors: \n')
 for a in get_error_days():
-    print(a[0] + " - " + format(a[1], '.2g') + "% errors")
+    print(formDate(a[0]) + " - " + format(a[1], '.2g') + "% errors")
 print("\n")

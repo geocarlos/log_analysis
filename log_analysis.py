@@ -63,3 +63,26 @@ def get_error_days():
         as error_rate from req_totals rt, req_errors re
         where rt.day = re.day and re.errors > (rt.requests::real/100)
         group by rt.day, rt.requests, re.errors;''')
+
+"""
+Make date human friendly
+"""
+def formDate(date):
+    months = {
+        '01':'January',
+        '02':'February',
+        '03':'March',
+        '04':'April',
+        '05':'May',
+        '06':'June',
+        '07':'July',
+        '08':'August',
+        '09':'September',
+        '10':'October',
+        '11':'November',
+        '12':'December'
+        }
+    day = date[8:10]
+    month = date[5:7]
+    year = date[:4]
+    return months[month]+" "+day+", "+year
