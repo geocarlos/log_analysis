@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from log_analysis import *
 
 print("\n1. The most popular three articles of all time: \n")

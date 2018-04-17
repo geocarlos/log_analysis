@@ -1,6 +1,7 @@
 # Log Analysis
 
 This is a Python program to analyze a database and print out reports based on the data in the database. The pyscopg2 module is used.
+Developed and tested with Python 2.7.12.
 
 This is a command line program, that is, it should be run from a terminal or command prompt/cmd/PowerShell. Linux/Unix is recommended, though. It requires Python and Postgresql.
 
