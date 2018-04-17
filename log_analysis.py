@@ -33,14 +33,13 @@ def get_top_authors():
     The query used here depends on a view,
     which has been created with the code below:
 
-    create view authors_views as
-    select au.id, count(l.*) as views
-    from articles ar, authors au, log l where au.id = ar.author
-    and ar.slug =substr(l.path, 10)
-    group by au.id, l.path, ar.author;
+    [create view authors_views as
+        select au.id, count(l.*) as views
+        from articles ar, authors au, log l where au.id = ar.author
+        and ar.slug =substr(l.path, 10)
+        group by au.id, l.path, ar.author;]
     """
-    return get_conn('''
-    select au.name, sum(av.views) as views
+    return get_conn('''select au.name, sum(av.views) as views
     from authors au, authors_views av
     where au.id = av.id group by av.id, au.name
     order by views desc;''')
@@ -49,17 +48,30 @@ def get_top_authors():
 3. On which days did more than 1% of requests lead to errors?
 """
 def get_error_days():
-    return get_conn('''select path, count(path) as num from log
-    where path != '/'
-    group by path
-    order by num desc
-    limit 3;''')
+    """
+    [create view req_errors as
+        select substr(time::text,0,11) as day, count(*) as errors
+        from log where status not like '20%'
+        group by day;]
 
-print("\nTop articles: \n");
+    [create view req_totals as
+        select substr(time::text,0,11) as day, count(*) as requests
+        from log where status like '20%'
+        group by day;]
+    """
+    return get_conn('''select rt.day, (re.errors/rt.requests::real*100)
+        as error_rate from req_totals rt, req_errors re
+        where rt.day = re.day and re.errors > (rt.requests::real/100)
+        group by rt.day, rt.requests, re.errors;''')
+
+print("\nTop articles: \n")
 for a in get_top_articles():
     print(a[0] + " - " + str(a[1]) + " views")
 
-print("\n\nTop authors: \n");
+print("\n\nTop authors: \n")
 for a in get_top_authors():
     print(a[0] + " - " + str(a[1]) + " views")
-# print(get_error_days())
+
+print('\n\nDays with errors > 1%: \n')
+for a in get_error_days():
+    print(a[0] + " - " + format(a[1], '.2g') + "% errors")
