@@ -17,11 +17,11 @@ Which articles have been accessed the most?
 """
 def get_top_articles():
     return get_conn('''select a.title, count(a.title)
-    as views from articles a, log l
-    where path != '/' and a.slug = substr(l.path,10)
-    group by a.title
-    order by views desc
-    limit 3;''')
+        as views from articles a, log l
+        where path != '/' and a.slug = substr(l.path,10)
+        group by a.title
+        order by views desc
+        limit 3;''')
 
 """
 2. Who are the most popular article authors of all time?
@@ -40,9 +40,9 @@ def get_top_authors():
         group by au.id, l.path, ar.author;]
     """
     return get_conn('''select au.name, sum(av.views) as views
-    from authors au, authors_views av
-    where au.id = av.id group by av.id, au.name
-    order by views desc;''')
+        from authors au, authors_views av
+        where au.id = av.id group by av.id, au.name
+        order by views desc;''')
 
 """
 3. On which days did more than 1% of requests lead to errors?
@@ -63,15 +63,3 @@ def get_error_days():
         as error_rate from req_totals rt, req_errors re
         where rt.day = re.day and re.errors > (rt.requests::real/100)
         group by rt.day, rt.requests, re.errors;''')
-
-print("\nTop articles: \n")
-for a in get_top_articles():
-    print(a[0] + " - " + str(a[1]) + " views")
-
-print("\n\nTop authors: \n")
-for a in get_top_authors():
-    print(a[0] + " - " + str(a[1]) + " views")
-
-print('\n\nDays with errors > 1%: \n')
-for a in get_error_days():
-    print(a[0] + " - " + format(a[1], '.2g') + "% errors")
